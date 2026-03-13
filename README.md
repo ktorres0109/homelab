@@ -17,17 +17,19 @@ Personal self-hosted infrastructure running on an Arch Linux home server. All se
 - **OS:** Arch Linux
 - **Containers:** Docker + Docker Compose
 - **Networking:** Cloudflare Tunnel (zero open ports)
+- **VPN:** Tailscale exit node — all personal devices route through the home server permanently
+- **DNS:** Pi-hole + Unbound — network-wide ad blocking with private recursive DNS resolution (no ISP or third-party DNS logging)
 - **Monitoring:** Beszel
-- **Remote access:** Tailscale
 - **Storage:** 2TB NAS for media, Google Drive for encrypted backups
 
 ## How it works
 
 All services run as Docker Compose stacks. Public traffic flows through a Cloudflare Tunnel (cloudflared running as a systemd service) to Nginx Proxy Manager, which routes to the appropriate container. No ports are forwarded on the router — this works even on restricted networks.
-
 ```
 Internet → Cloudflare Tunnel → Nginx Proxy Manager → Docker containers
 ```
+
+All personal devices (MacBook, iPhone, iPad) run Tailscale permanently, routing through the home server as an exit node. DNS resolves through Pi-hole → Unbound, blocking ads on every app across every device without any third party seeing DNS queries.
 
 See [docs/architecture.md](./docs/architecture.md) for a full breakdown.
 
@@ -38,7 +40,6 @@ Vaultwarden data is synced to Google Drive daily at 2am via [rclone](./scripts/v
 ## Setup
 
 Each service has its own directory with a `docker-compose.yml`. To deploy any service:
-
 ```bash
 cd <service>
 cp .env.example .env   # fill in your values
