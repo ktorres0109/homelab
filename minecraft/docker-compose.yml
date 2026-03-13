@@ -1,0 +1,13 @@
+services:
+  mc:
+    image: itzg/minecraft-server
+    container_name: minecraft
+    network_mode: host
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "LATEST"
+      MEMORY: "8G"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
